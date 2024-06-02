@@ -31,6 +31,42 @@ make
 <br/>
 
 ## ✅ 출력 예시
+
+### ◾ 송수신
+```
+[2024-06-01 23:13:23.557] Sender -> Packet Transmission : DATA Packet(seq=3, ack=0)
+[2024-06-01 23:13:23.557] Receiver -> Packet Reception : DATA Packet(seq=3, ack=0)
+```
+Sender가 전신한 3번 패킷을 Receiver가 수신하는 로그입니다.
+Receiver은 다음에 요청할 패킷의 번호를 ackNum에 담아서 보낼 예정입니다.
+<br/>
+
+### ◾ 패킷 손실
+```
+[2024-06-01 23:13:23.557] Receiver -> Packet Loss : ACK Packet(seq=0, ack=4)
+```
+Receiver가 3번 패킷을 잘 받았다는 ACK 패킷을 Sender에게 전송하던 도중 Packet Loss가 발생합니다.
+<br/>
+
+### ◾ 타임아웃
+```
+[2024-06-01 23:13:28.557] Sender -> Timeout : DATA Packet(seq=3, ack=0)
+```
+Sender가 3번 패킷을 전송할 때 시작했던 타이머가 종료되면서 Timeout이 발생합니다.
+<br/>
+
+### ◾ 재전송
+```
+[2024-06-01 23:13:28.558] Sender-> Packet Retransmission : DATA Packet(seq=3, ack=0)
+[2024-06-01 23:13:28.558] Receiver-> Packet Reception : DATA Packet(seq=3, ack=0)
+[2024-06-01 23:13:28.558] Receiver-> Packet Transmission : ACK Packet(seq=0, ack=4)
+[2024-06-01 23:13:28.558] Sender-> Packet Reception : ACK Packet(seq=0, ack=4)
+```
+Sender 입장에서는 ACK 패킷을 받지 못했으므로 Receiver가 3번 패킷을 제대로 전달받지 못했다고 간주하여 3번 패킷을 다시 전송합니다. 이번에는 중간에 Packet loss가 발생하지 않아 무사히 3번 패킷에 대한 ACK를 전달받고, 타이머를 종료합니다.
+<br/>
+<br/>
+
+### ◾ 전체 로그
 ```
 [2024-06-01 23:13:23.553] Sender -> Packet Transmission : DATA Packet(seq=0, ack=0)
 	length: 8
